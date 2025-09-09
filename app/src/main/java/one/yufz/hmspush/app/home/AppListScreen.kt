@@ -249,7 +249,18 @@ private fun MoreDropdownMenu(expanded: Boolean, info: AppInfo, onDismissRequest:
         if (info.useZygiskFake) {
             DropdownMenuItem(
                 text = {
-                    Text(text = stringResource(R.string.menu_enable_zygisk_fake))
+                    Text(text = stringResource(R.string.menu_disable_zygisk_fake))
+                },
+                onClick = {
+                    onDismissRequest()
+                    GlobalScope.launch {
+                        FakeDeviceConfig.deleteConfig(info.packageName)
+                    }
+                }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(R.string.menu_edit_zygisk_fake))
                 },
                 onClick = {
                     onDismissRequest()
@@ -261,7 +272,7 @@ private fun MoreDropdownMenu(expanded: Boolean, info: AppInfo, onDismissRequest:
         } else {
             DropdownMenuItem(
                 text = {
-                    Text(text = stringResource(R.string.menu_disable_zygisk_fake))
+                    Text(text = stringResource(R.string.menu_enable_zygisk_fake))
                 },
                 onClick = {
                     onDismissRequest()

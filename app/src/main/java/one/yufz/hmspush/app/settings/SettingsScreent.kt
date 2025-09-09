@@ -18,11 +18,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Computer
+import androidx.compose.material.icons.outlined.ArrowUpward
+import androidx.compose.material.icons.outlined.Android
 import androidx.compose.material.icons.outlined.FormatColorFill
 import androidx.compose.material.icons.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.NotificationsOff
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.RemoveModerator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
@@ -90,6 +92,22 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
         Surface(modifier = Modifier.padding(paddingValues)) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 SwitchPreference(
+                    title = stringResource(id = R.string.hide_app_icon),
+                    icon = Icons.Outlined.Android,
+                    checked = preferences.hideAppIcon,
+                    onCheckedChange = viewModel::toggleAppIcon,
+                )
+                SwitchPreference(
+                    title = stringResource(id = R.string.keep_alive),
+                    summary = stringResource(id = R.string.keep_alive_summary),
+                    icon = Icons.Outlined.Favorite,
+                    checked = preferences.keepAlive,
+                    onCheckedChange = {
+                        viewModel.updatePreference { keepAlive = it }
+                        viewModel.setHmsCoreForeground(it)
+                    }
+                )
+                SwitchPreference(
                     title = stringResource(id = R.string.disable_signature),
                     summary = stringResource(id = R.string.disable_signature_summary),
                     icon = Icons.Outlined.RemoveModerator,
@@ -107,15 +125,13 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         viewModel.updatePreference { groupMessageById = it }
                     }
                 )
-
-                SwitchPreference(
-                    title = stringResource(id = R.string.keep_alive),
-                    summary = stringResource(id = R.string.keep_alive_summary),
-                    icon = Icons.Outlined.Computer,
-                    checked = preferences.keepAlive,
-                    onCheckedChange = {
-                        viewModel.updatePreference { keepAlive = it }
-                        viewModel.setHmsCoreForeground(it)
+                DropdownPreferences(
+                    title = stringResource(id = R.string.low_notification_importance),
+                    icon = Icons.Outlined.NotificationsOff,
+                    data = importanceMap,
+                    initKey = preferences.lowNotificationImportance,
+                    onSelectChanged = {
+                        viewModel.updatePreference { lowNotificationImportance = it }
                     }
                 )
                 SwitchPreference(
@@ -141,24 +157,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         }
                     )
                 }
-                SwitchPreference(
-                    title = stringResource(id = R.string.hide_app_icon),
-                    icon = Icons.Outlined.Palette,
-                    checked = preferences.hideAppIcon,
-                    showDivider = true,
-                    onCheckedChange = viewModel::toggleAppIcon,
-                )
-                DropdownPreferences(
-                    title = stringResource(id = R.string.low_notification_importance),
-                    icon = Icons.Outlined.NotificationsOff,
-                    data = importanceMap,
-                    initKey = preferences.lowNotificationImportance,
-                    onSelectChanged = {
-                        viewModel.updatePreference { lowNotificationImportance = it }
-                    }
-                )
             }
-
         }
     }
 }
