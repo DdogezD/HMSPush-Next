@@ -13,6 +13,7 @@ import one.yufz.hmspush.hook.XLog
 import one.yufz.hmspush.hook.bridge.HookContentProvider
 import one.yufz.hmspush.hook.hms.dummy.HookDummyActivity
 import one.yufz.xposed.*
+import org.lsposed.hiddenapibypass.HiddenApiBypass
 
 class HookHMS {
     companion object {
@@ -20,6 +21,9 @@ class HookHMS {
     }
 
     fun hook(lpparam: XC_LoadPackage.LoadPackageParam) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            HiddenApiBypass.addHiddenApiExemptions("")
+        }
         //android.app.PendingIntent.getActivity(android.content.Context, int, android.content.Intent, int)
         PendingIntent::class.java.hookMethod("getActivity", Context::class.java, Int::class.java, Intent::class.java, Int::class.java) {
             doBefore {
